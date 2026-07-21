@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loan Risk Predictor</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 600px;
+            width: 100%;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border 0.3s;
+        }
+        input:focus, select:focus {
+            border-color: #667eea;
+            outline: none;
+        }
+        .row {
+            display: flex;
+            gap: 15px;
+        }
+        .row .form-group {
+            flex: 1;
+        }
+        button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s;
+            margin-top: 10px;
+        }
+        button:hover {
+            transform: scale(1.02);
+        }
+        #result {
+            margin-top: 25px;
+            padding: 20px;
+            border-radius: 12px;
+            background: #f8f9fa;
+            text-align: center;
+            display: none;
+        }
+        #result.show {
+            display: block;
+        }
+        .prediction-badge {
+            font-size: 24px;
+            font-weight: bold;
+            padding: 10px;
+            border-radius: 8px;
+        }
+        .risk-badge {
+            font-size: 20px;
+            margin-top: 10px;
+        }
+        .error {
+            color: red;
+            font-weight: bold;
+        }
+        @media (max-width: 500px) {
+            .row { flex-direction: column; gap: 0; }
+            .container { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏦 Loan Risk Predictor</h1>
+        <p class="subtitle">Enter applicant details to assess default risk</p>
+
+        <form id="loanForm">
+            <div class="row">
+                <div class="form-group">
+                    <label>Gender</label>
+                    <select name="Gender">
+                        <option value="1">Female</option>
+                        <option value="0" selected>Male</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Married</label>
+                    <select name="Married">
+                        <option value="0">No</option>
+                        <option value="1" selected>Yes</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="form-group">
+                    <label>Dependents</label>
+                    <select name="Dependents">
+                        <option value="0" selected>0</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3+</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Education</label>
+                    <select name="Education">
+                        <option value="0">Not Graduate</option>
+                        <option value="1" selected>Graduate</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="form-group">
+                    <label>Self Employed</label>
+                    <select name="Self_Employed">
+                        <option value="0" selected>No</option>
+                        <option value="1">Yes</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Credit History</label>
+                    <select name="Credit_History">
+                        <option value="0">Bad</option>
+                        <option value="1" selected>Good</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="form-group">
+                    <label>Applicant Income ($)</label>
+                    <input type="number" name="ApplicantIncome" value="5000" step="100">
+                </div>
+                <div class="form-group">
+                    <label>Coapplicant Income ($)</label>
+                    <input type="number" name="CoapplicantIncome" value="0" step="100">
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="form-group">
+                    <label>Loan Amount ($)</label>
+                    <input type="number" name="LoanAmount" value="150" step="10">
+                </div>
+                <div class="form-group">
+                    <label>Loan Term (days)</label>
+                    <input type="number" name="Loan_Amount_Term" value="360" step="10">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Property Area</label>
+                <select name="Property_Area">
+                    <option value="0">Rural</option>
+                    <option value="1">Semiurban</option>
+                    <option value="2" selected>Urban</option>
+                </select>
+            </div>
+
+            <button type="submit">🔮 Predict Risk</button>
+        </form>
+
+        <div id="result">
+            <div class="prediction-badge" id="predictionText"></div>
+            <div class="risk-badge" id="riskText"></div>
+            <p style="margin-top: 15px; color: #555;" id="probText"></p>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('loanForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const data = {};
+            for (let [key, value] of formData.entries()) {
+                data[key] = parseFloat(value);
+            }
+
+            const resultDiv = document.getElementById('result');
+            resultDiv.className = 'show';
+
+            try {
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                if (result.error) {
+                    resultDiv.innerHTML = `<p class="error">❌ ${result.error}</p>`;
+                    return;
+                }
+
+                document.getElementById('predictionText').innerHTML = 
+                    `📊 Prediction: <span style="color: ${result.prediction === 'Default' ? '#dc3545' : '#28a745'}">${result.prediction}</span>`;
+                
+                document.getElementById('riskText').innerHTML = result.risk_level;
+                
+                document.getElementById('probText').innerHTML = 
+                    `Default Probability: <strong>${result.probability}%</strong>`;
+
+            } catch (error) {
+                resultDiv.innerHTML = `<p class="error">❌ Could not connect to server. Make sure Flask is running.</p>`;
+            }
+        });
+    </script>
+</body>
+</html>
